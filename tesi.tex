@@ -1,14 +1,18 @@
 \documentclass[11pt,a4paper,twoside,openright]{report}
 
-\usepackage[dvips]{graphicx}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{subfigure}
 \usepackage{afterpage}
 \usepackage{amsmath,amssymb}            
 \usepackage{rotating}  
 \usepackage{fancyhdr}  
-\usepackage[scriptsize]{caption} 
-\hyphenation{a-gen-tiz-za-zio-ne}
+\usepackage[scriptsize]{caption}
+\usepackage[backend=bibtex,style=numeric-comp]{biblatex}
+
+\addbibresource{bibl_tesi.bib}
 
 \setlength{\paperwidth}{16cm}
 \setlength{\paperheight}{24cm}
@@ -16,10 +20,7 @@
 \setlength{\evensidemargin} {2. cm}
 \addtolength{\oddsidemargin} {-0.4 cm}
 \addtolength{\evensidemargin} {-0.4 cm}
-\linespread{1.1}
 
-\usepackage[italian]{babel}
-\usepackage[latin1]{inputenc}
 \renewcommand{\captionfont}{\normalfont \sffamily \itshape \small}
 
 \pagestyle{empty}
@@ -34,7 +35,13 @@
 \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
 \include{ringraziamenti}
 \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
-\pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
+\pagenumbering{arabic}
+
+\tableofcontents
+
+\pagestyle{fancy} 
+\fancyfoot{}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
 \fancyhead[LE,RO]{\bfseries\thepage}    
                                         
@@ -44,17 +51,16 @@
 
 \include{capitolo1}
 \include{capitolo2}
-\include{capitolo3}
-\include{capitolo4}
-\include{capitolo5}
-\include{capitolo6}
-\include{capitolo7}
+%\include{capitolo3}
+%\include{capitolo4}
+%\include{capitolo5}
+%\include{capitolo6}
+%\include{capitolo7}
 
 \cleardoublepage
 % ---- Bibliography ----
 \addcontentsline{toc}{chapter}{Bibliografia}
-\bibliographystyle{plain}
-\bibliography{bibl_tesi}
+\printbibliography
 %\nocite{*}
 
 \appendix
@@ -70,11 +76,11 @@
 \renewcommand{\headrulewidth}{0.3pt} 
 
 \include{appendiceA}
-\include{appendiceB}
-\include{appendiceC}
-\include{appendiceD}
-\include{appendiceE}
-\include{appendiceF}
+%\include{appendiceB}
+%\include{appendiceC}
+%\include{appendiceD}
+%\include{appendiceE}
+%\include{appendiceF}
 
 \end{document}
 
