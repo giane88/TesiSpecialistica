@@ -10,18 +10,41 @@
 \usepackage{rotating}  
 \usepackage{fancyhdr}  
 \usepackage[scriptsize]{caption}
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage{color}
 \usepackage[backend=bibtex,style=numeric-comp]{biblatex}
 
 \addbibresource{bibl_tesi.bib}
 
 \setlength{\paperwidth}{16cm}
-\setlength{\paperheight}{24cm}
+\setlength{\paperheight}{22cm}
 \setlength{\oddsidemargin} {2. cm}
 \setlength{\evensidemargin} {2. cm}
 \addtolength{\oddsidemargin} {-0.4 cm}
 \addtolength{\evensidemargin} {-0.4 cm}
 
 \renewcommand{\captionfont}{\normalfont \sffamily \itshape \small}
+
+\lstloadlanguages{C,Java,[CORBA]IDL,[GNU]C++,SQL}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+
+\lstset{basicstyle=\small\ttfamily,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{green},
+	stringstyle=\color{red},
+	showstringspaces=true,
+	numbers=left,
+	frame=single,
+	columns=fullflexible,
+	breaklines=true,
+	float=tb,
+	captionpos=b}
+
+\newcommand{\lstname}{Listato }
 
 \pagestyle{empty}
 
