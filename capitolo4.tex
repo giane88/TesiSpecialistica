@@ -146,39 +146,71 @@ In \figurename \ref{fig:transmission} vediamo la sequenza di messaggi che avvien
 \section{La struttura dati}
 Come abbiamo detto nel \chaptername \ref{capitolo3} uno dei nostri obiettivi è quello di mantenere la retrocompatibilità con il vecchio software di Lis fino al completo aggiornamento dei moduli. Per fare ciò è stato necessario mantenere la struttura dati precedente per far si che il resto del software potesse prelevare i dati senza nessuna complicazione. In particolare la tabella più importante per la ricezione degli eventi era quella \texttt{allarmi\_contact\_id} i cui campi si ricavano dallo script di creazione del \lstname \ref{lst:allarmicontactid}
 \begin{lstlisting}[language=SQL,caption=Tabella allarmi\_contact\_id,label=lst:allarmicontactid]
-CREATE TABLE allarmi
+CREATE TABLE allarmi_contact_id
 (
-	al_id integer NOT NULL DEFAULT 		nextval(('"allarmi_al_id_seq"'::text)::regclass),
-	ce_id integer,
-	st_id integer,
-	al_descrizione character varying(500),
-	al_note text,
-	al_data_arrivo timestamp with time zone DEFAULT '2004-10-04 12:36:22.272563+02'::timestamp with time zone,
-	al_pendente character varying(1) DEFAULT 's'::character varying,
-	al_zona character varying(20),
-	al_area character varying(20),
-	al_codice character varying(20),
-	al_gruppo character varying(50),
-	al_simm_code character varying(10),
-	al_comportamento integer DEFAULT 0,
-	al_isperiferica text,
-	al_provenienza integer DEFAULT 0,
-	al_data_pending timestamp with time zone,
-	al_seriale integer,
-	al_linea integer,
-	CONSTRAINT pk_allarmi1 PRIMARY KEY (al_id)
+	ac_id integer NOT NULL DEFAULT nextval(('"allarmi_contact_id_seq"'::text)::regclass),
+	ac_centrale character varying(20),
+	ac_allarme character varying(10),
+	ac_area bigint,
+	ac_zona bigint,
+	ac_giorno smallint,
+	ac_mese smallint,
+	ac_anno smallint,
+	ac_ora smallint,
+	ac_minuto smallint,
+	ac_secondo smallint,
+	ac_data_inserimento timestamp without time zone DEFAULT now(),
+	ac_pending character(1) DEFAULT 's'::character varying,
+	ac_porta_seriale integer,
+	ac_n_ricevitore smallint,
+	ac_n_gruppo smallint,
+	CONSTRAINT allarmi_contact_id_pkey PRIMARY KEY (ac_id)
 )
 \end{lstlisting}
-Oltre a questa tabella si è deciso anche di aggiornare una serie di tabelle collegate tra loro che hanno la funzione di monitorare lo stato dei ricevitori. Nel vecchio software per verificare la corretta esecuzione del software, ogni qualvolta che una segnalazione giungeva ad uno dei ricevitori veniva aggiornato un campo nella tabella \texttt{linee} il quale è collegato alla tabella \texttt{ricevitori}; questo collegamento è mostrato in \figurename \ref{fig:erricevitori}.
+Come si nota i campi da compilare sono diversi anche se non tutti necessari. Il campo allarme contiene il codice Contact ID dell'allarme ricevuto, nel paragrafo successivo vedremo come questo meccanismo sia stato adattato per l'utilizzo anche dei codici di allarme SIA. Il campo \texttt{pending} serve al cp200\_4 per identificare quali allarmi sono già stati processati in quanto questa tabella mantiene anche lo storico giornaliero degli allarmi ricevuti.\\
+Oltre a questa tabella si è deciso anche di aggiornare una serie di tabelle collegate tra loro che hanno la funzione di monitorare lo stato dei ricevitori. Nel vecchio software per verificare la corretta esecuzione del software, ogni qualvolta che una segnalazione giungeva ad uno dei ricevitori veniva aggiornato un campo nella tabella \texttt{seriale} il quale è collegato alla tabella \texttt{ricevitori}; questo collegamento è mostrato in \figurename \ref{fig:erricevitori}.
 Il codice di creazione di queste tabelle è mostrato nel \lstname \ref{lst:ricevitori}.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{pictures/erricevitori.png}
-	\caption{Schema ER delle tabelle che controllano i ricevitori}\label{fig:erricevitori}
+	\caption{Schema relazionale delle tabelle che controllano i ricevitori}\label{fig:erricevitori}
 \end{figure}
 \begin{lstlisting}[language=SQL,caption=Tabelle ricevitori,label=lst:ricevitori]
-	CREATE TABLE ricevitori()
+CREATE TABLE seriale
+(
+	se_id integer NOT NULL DEFAULT 		nextval(('"seriale_se_id_seq"'::text)::regclass),
+	se_numero integer,
+	se_stato character varying(1) DEFAULT 's'::character varying,
+	se_allarme integer,
+	se_controllo character varying(1),
+	CONSTRAINT pk_seriale PRIMARY KEY (se_id)
+)
+
+CREATE TABLE ricevitore
+(
+	ri_id integer NOT NULL DEFAULT 	nextval(('"ricevitore_ri_id_seq"'::text)::regclass),
+	se_id integer,
+	ri_stato character varying(2) DEFAULT 'n'::character varying,
+	ri_tipo character varying(50),
+	ri_batteria smallint,
+	ri_modalita smallint,
+	ri_mancanza_220 smallint,
+	ri_stampante smallint,
+	ri_collegato smallint,
+	ri_data_220 timestamp with time zone,
+	ri_data_batteria timestamp with time zone,
+	ri_stato_ricevitore smallint,
+	ri_numero smallint,
+	CONSTRAINT pk_ricevitore PRIMARY KEY (ri_id),
+	CONSTRAINT fk_ricevito_reference_seriale FOREIGN KEY (se_id)
+	REFERENCES seriale (se_id) MATCH SIMPLE
+	ON UPDATE RESTRICT ON DELETE RESTRICT
+)
 \end{lstlisting}
 Questa meccanismo se pur non necessario per il corretto funzionamento del vecchio software è stato mantenuto, con dei piccoli adattamenti, per monitorare il funzionamento del nuovo software di ricezione.
+Tuttavia come si nota dalla complessità delle tabelle questo sistema porta con se anche degli elementi caratteristici del passato come l'utilizzo di una tabella \texttt{SERIALE} utilizzata dai tempi in cui i ricevitori erano ancora collegati tramite questo tipo di connessione cablata.
+
 \section{Architettura del sistema}
+Analizziamo ora come è stato sviluppato il sistema. Si è deciso di passare ad un softwre strutturato per classi. L'idea era quella di avere un controllore che monitorasse periodicamente i diversi ricevitori e nel caso questi non fossero avviati li riavviasse in automatico. I ricevitori dal canto loro dovevano comportarsi tutti pressochè alla stessa maniera ovvero le funzioni principali che dovevano svolgere erano quella di aggiornare il campo \texttt{controllo} della tabella seriale e caricare l'allarme sul database rispettando lo standard Contact-ID.
 \section{Implementazione}
+Inanzitutto si è deciso di sviluppare il software in linguaggio C++ aggiornato allo standard 0x rilasciato nel 2011 per supportare meglio il multi-threading e per fare ciò si è deciso di utilizzare il compilatore gcc-4.8 l'ultimo rilasciato al momento dell'implementazione
