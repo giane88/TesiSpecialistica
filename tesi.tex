@@ -25,8 +25,8 @@
 \addtolength{\evensidemargin} {-0.4 cm}
 
 \renewcommand{\captionfont}{\normalfont \sffamily \itshape \small}
-
-\lstloadlanguages{C,Java,[CORBA]IDL,[GNU]C++,SQL}
+\newcommand{\lname}[1]{Listato~\ref{#1}}
+\newcommand{\fname}[1]{Figura~\ref{#1}}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -44,7 +44,7 @@
 	float=tb,
 	captionpos=b}
 
-\newcommand{\lstname}{Listato }
+
 
 \pagestyle{empty}
 
@@ -76,7 +76,7 @@
 \include{capitolo2}
 \include{capitolo3}
 \include{capitolo4}
-%\include{capitolo5}
+\include{capitolo5}
 %\include{capitolo6}
 %\include{capitolo7}
 

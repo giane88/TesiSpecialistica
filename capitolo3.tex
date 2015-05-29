@@ -66,7 +66,7 @@ Obiettivi secondari alla telegestione sono stati la minimizzazione dei tempi di 
 \subsection{Utilizzo di nuovi vettori di comunicazione}
 Gli obiettivi di rinnovamento del software non potevano limitarsi solamente ad un nuovo software ma, soprattutto, erano legati in modo indissolubile dall'utilizzo di nuovi vettori di comunicazione in particolare TCP/IP, GPRS ed SMS per minimizzare i costi di comunicazione e diminuire i tempi di dialogo tra la centrale di allarme e la centrale operativa.\\
 L'utilizzo di questi vettori ha comportato lo studio di protocolli specifici come il Contact-ID o il SIA over IP e l'utilizzo e quindi l'interfacciamento del software con nuovo hardware come i modem GPRS.
-\section{Problematiche legate al software preesistente}
+\section{Vincoli di progetto}
 Con il nostro arrivo sono state introdotte numerose modifiche al software preesistente tuttavia per mantenere l'operatività e l'usabilità durante tutto lo sviluppo è stato necessario effettuare alcune scelte che permettessero la retrocompatibilità e la normale esecuzione del software preesistente. In particolare è stato necessario mantenere il meccanismo nel quale il cp220\_3 memorizzava gli allarmi nel database per diverse ragioni. Questo memorizzazione consisteva nell'inserimento in tabella di un nuovo record così composto:
 \begin{description}
 	\item[Ora ricezione:]
