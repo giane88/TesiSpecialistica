@@ -48,6 +48,8 @@
 
 \pagestyle{empty}
 
+\makeindex
+
 \begin{document}
 \include{frontespizio}
 \thispagestyle{empty} \normalfont \cleardoublepage
@@ -55,12 +57,15 @@
 \thispagestyle{empty}  \cleardoublepage
 \pagenumbering{Roman}
 \include{sommario}
-\thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
+\thispagestyle{empty} 
 \include{ringraziamenti}
-\thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
-\pagenumbering{arabic}
-
 \tableofcontents
+\listoffigures
+\cleardoublepage
+
+
+
+\pagenumbering{arabic}
 
 \pagestyle{fancy} 
 \fancyfoot{}
@@ -77,8 +82,9 @@
 \include{capitolo3}
 \include{capitolo4}
 \include{capitolo5}
-%\include{capitolo6}
-%\include{capitolo7}
+\include{capitolo6}
+\include{capitolo7}
+\include{capitolo8}
 
 \cleardoublepage
 % ---- Bibliography ----
